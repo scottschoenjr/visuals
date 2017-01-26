@@ -168,6 +168,7 @@ for kxCount = Nx:-1:1
         
         % Get contribution of this spatial frequency
         yPlot = amplitude.*real( exp( 1j.*(kx.*(xPlot - sourcePlaneWidth./2) + phi) ) );
+
         
         % Also plot in gray to remain on plot
         previousContributions = plot( summationAxes, ...
