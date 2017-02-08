@@ -2,7 +2,8 @@
 %
 % Fourier Transform Reconstruction Visualizer
 %
-%   Function plots shows a visualization of Fourier transform reconstuction
+%   Scirpt shows an animated visualization of Fourier transform
+%   reconstuction for an arbitrary signal.
 %
 %              Scott Schoen Jr | Georgia Tech | 20170127
 %
@@ -25,7 +26,7 @@ s = square( 2.*pi.*f0.*tVector );
 s = sawtooth( 2.*pi.*f0.*tVector );
 
 % Read in audio file
-useAudioFile = 0;
+useAudioFile = 1;
 audioFile = './audio/horned_owl-Mike_Koenig-1945374932.wav';
 if useAudioFile
     % Read in audio and reset sampling frequency/time vector
@@ -121,7 +122,7 @@ linkaxes( [ftMagnitudeAxes, ftPhaseAxes], 'x' );
 
 % It would be too slow to plot for every single frequency. Instead set a
 % percentile, and only plot contributions above a certain percentile
-percentile = 99.2; % Plot only this contributions above this
+percentile = 99.7; % Plot only this contributions above this
 sortedAmplitudes = sort( ampVec );
 thresholdIndex = round( (percentile./100).*length(ampVec) );
 thresholdValue = sortedAmplitudes( thresholdIndex );

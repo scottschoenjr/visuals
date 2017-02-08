@@ -14,7 +14,7 @@ close all
 clc
 
 % Set frequency of source
-f0 = 6E3; % [Hz]
+f0 = 15E3; % [Hz]
 omega = 2.*pi.*f0;
 c0 = 343; % [m/s]
 k0 = omega./c0;
@@ -86,7 +86,7 @@ box on;
 % Plot amplitude
 plot( asMagnitudeAxes, thetaVec.*180./pi, ampVec./Nx, 'k' );
 ylabel( 'Amplitude [AU]' );
-ylim( [-0.02, 0.2] );
+ylim( [-0.02, 0.5] );
 xlim([0, 180]);
 set( gca, 'XTick', [0, 45, 90, 135, 180] );
 title( '$\mathcal{A}_{\tilde{p}}$', 'FontSize', 26 );
