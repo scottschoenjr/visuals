@@ -14,7 +14,7 @@ close all
 clc
 
 % Set frequency of source
-f0 = 15E3; % [Hz]
+f0 = 25E3; % [Hz]
 omega = 2.*pi.*f0;
 c0 = 343; % [m/s]
 k0 = omega./c0;
@@ -32,6 +32,8 @@ A = exp( -(xVector - 0.05).^(2)./sigma.^(2) ) ...
     + sin( 3.*pi.*xVector./sourcePlaneWidth ) ...
     + sin( 7.9.*pi.*xVector./sourcePlaneWidth );
 A = abs(A)./max(abs(A));
+A = 0.*xVector;
+A( round(Nx./2) ) = 1;
 
 % Get angular spectrum at source plane
 AS0 = fftshift( fft(A) );

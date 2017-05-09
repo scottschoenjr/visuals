@@ -17,16 +17,17 @@ clc
 addpath( './callbacks' );
 
 % Create source signal
-Fs = 9.999E3;
-tMax = 0.99;
+Fs = 500;
+tMax = 1;
 N = tMax.*Fs;
 tVector = linspace( 0, tMax, N ); % [s]
-f0 = 1E2;
-s = square( 2.*pi.*f0.*tVector );
+f0 = 5;
 s = sawtooth( 2.*pi.*f0.*tVector );
+s = square( 2.*pi.*f0.*tVector );
+percentile = 0.01; % Plot only this contributions above this
 
 % Read in audio file
-useAudioFile = 1;
+useAudioFile = 0;
 audioFile = './audio/horned_owl-Mike_Koenig-1945374932.wav';
 if useAudioFile
     % Read in audio and reset sampling frequency/time vector
@@ -83,7 +84,6 @@ ylabel( 'Amplitude', 'FontSize', 18 );
 xlim( [min(tVector), max(tVector)] );
 xlabel( 'Time [s]', 'FontSize', 22 );
 
-
 % Create axes for amplitude of the spectrum
 ftMagnitudeAxes = axes();
 set( ftMagnitudeAxes, 'Position', [0.7, 0.5, 0.25, 0.3], ...
@@ -122,9 +122,9 @@ linkaxes( [ftMagnitudeAxes, ftPhaseAxes], 'x' );
 
 % It would be too slow to plot for every single frequency. Instead set a
 % percentile, and only plot contributions above a certain percentile
-percentile = 99.7; % Plot only this contributions above this
 sortedAmplitudes = sort( ampVec );
 thresholdIndex = round( (percentile./100).*length(ampVec) );
+thresholdIndex = max( thresholdIndex, 1 );
 thresholdValue = sortedAmplitudes( thresholdIndex );
 
 % Loop over all frequencies

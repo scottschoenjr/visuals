@@ -110,7 +110,7 @@ for receiverCount = 1 : numReceivers
 end
 
 % Set same ylim as time series
-ylabel( 'Receiver Position [cm]' );
+ylabel( 'Transverse Distance [cm]' );
 ylim( (1 + scale).*1E2.*[min(yRec), max(yRec)] );
 
 % Set left limit to receiver position
@@ -149,13 +149,15 @@ for receiverCount = 1 : numReceivers
 end
 xlim( [0, 20] );
 ylim( (1 + scale).*1E2.*[min(yRec), max(yRec)] );
+ylabel( 'Transverse Distance [cm]' );
 
 summationAxes = axes();
 set( gca, 'Position', [0.12, 0.1, 0.8, 0.3] );
 hold all;
 box on;
 
-plot( 1E3.*tVector, summation./max(abs(summation)) );
+plot( 1E3.*tVector, summation./max(abs(summation)), 'k' );
+plot( 1E3.*tVector, abs(hilbert(summation./max(abs(summation)))), '--k' );
 
 xlim( [0, 20] );
 ylim([-1.12, 1.12]);
