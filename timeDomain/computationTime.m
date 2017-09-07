@@ -47,7 +47,7 @@ set( gca, 'YScale', 'log' );
 legend( [tdPlot, fdPlot], ' Time Domain', ' Frequency Domain' )
 
 % Compute and plot convolution vs. multiplication
-numSteps = 31;
+numSteps = 50;
 numVectorPoints = round( logspace( 3.6, 5.4, numSteps) );
 
 % Vectors to store multiplication and convolution time steps
@@ -63,7 +63,7 @@ for stepCount = 1 : numSteps
    x = conv( v1, v2 );
    convTimes( stepCount ) = toc;
    tic;
-   x = v1.*v2;
+   x = ifft( fft(v1).*fft(v2) );
    multTimes( stepCount ) = toc;
        
 end
@@ -79,8 +79,8 @@ convPlot = plot( numVectorPoints, convTimes.*1E3, '--k' );
 
 xlim( [6E3, 2E5] );
 
-xlabel( 'Number of Points' );
-ylabel( 'Computation Time [ms]' );
+xlabel( 'Number of Points', 'FontSize', 24 );
+ylabel( 'Computation Time [ms]', 'FontSize', 24 );
 
 set( gca, 'XScale', 'log', ...
     'XTick', [1E4, 5E4, 1E5, 2E5], ...
@@ -89,8 +89,10 @@ set( gca, 'YScale', 'log', ...
     'YTick', [0.01, 0.1, 1, 10, 100, 1000, 10000], ...
     'YTickLabel', {'0.01'; '0.1';'1';'10';'100';'1 s';'10 s' } );
 
-legHandle = legend( [multPlot, convPlot], '\,\,$f \cdot g$', '\,\,$f * g$' );
-set( legHandle, 'Interpreter', 'LaTeX', 'FontSize', 22 );
+legHandle = legend( [convPlot, multPlot,], ...
+    '\,\,$f * g$', ...
+    '\,\,$\mathcal{F}^{-1}[ \tilde{f} \cdot \tilde{g} ]$' );
+set( legHandle, 'Interpreter', 'LaTeX', 'FontSize', 24 );
 
 
 

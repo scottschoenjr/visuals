@@ -13,8 +13,12 @@ clear all
 close all
 clc
 
+% Whether or not to save video
+saveVideo = 1;
+filename = 'test.avi';
+
 % Set frequency of source
-f0 = 25E3; % [Hz]
+f0 = 20E3; % [Hz]
 omega = 2.*pi.*f0;
 c0 = 343; % [m/s]
 k0 = omega./c0;
@@ -30,10 +34,12 @@ xVector = linspace( -sourcePlaneWidth./2, sourcePlaneWidth./2, Nx );
 sigma = 0.05;
 A = exp( -(xVector - 0.05).^(2)./sigma.^(2) ) ...
     + sin( 3.*pi.*xVector./sourcePlaneWidth ) ...
-    + sin( 7.9.*pi.*xVector./sourcePlaneWidth );
-A = abs(A)./max(abs(A));
-A = 0.*xVector;
-A( round(Nx./2) ) = 1;
+    + 2.*sin( 7.9.*pi.*xVector./sourcePlaneWidth ) ...
+    + cos( 4.6.*pi.*xVector./sourcePlaneWidth );
+w = windowFunc( Nx, 'tuk', 0.2 );
+A = w.*abs(A)./max(abs(A));
+% A = 0.*xVector;
+% A( round(Nx./2) ) = 1;
 
 % Get angular spectrum at source plane
 AS0 = fftshift( fft(A) );
@@ -72,6 +78,7 @@ needToCreateAxes = 1;
 summationAxes = axes();
 set( summationAxes, 'Position', [0.12, 0.72, 0.5, 0.2] );
 ylim( [-0.2, 1.05] );
+ylabel( '$I(x)$', 'FontSize', 28)
 xlim( [min(xVector), max(xVector)] );
 set( gca, 'YTick', 0:0.5:1, 'XTick', [] );
 hold all;
@@ -87,11 +94,11 @@ hold all;
 box on;
 % Plot amplitude
 plot( asMagnitudeAxes, thetaVec.*180./pi, ampVec./Nx, 'k' );
-ylabel( 'Amplitude [AU]' );
+ylabel( 'Amplitude [AU]', 'FontSize', 24 );
 ylim( [-0.02, 0.5] );
 xlim([0, 180]);
 set( gca, 'XTick', [0, 45, 90, 135, 180] );
-title( '$\mathcal{A}_{\tilde{p}}$', 'FontSize', 26 );
+title( '$\mathcal{A}_{\tilde{p}}$', 'FontSize', 30 );
 
 asPhaseAxes = axes();
 set( asPhaseAxes, 'Position', [0.7, 0.2, 0.25, 0.3] );
@@ -102,14 +109,14 @@ box on;
 plot( asPhaseAxes, thetaVec.*180./pi, phaseVec, 'k' );
 
 xlim([0, 180]);
-ylabel('Phase [rad]');
+ylabel('Phase [rad]', 'FontSize', 24);
 ylim( 1.05.*[-pi, pi] );
 ax = gca;
 ax.YTick = [-pi, -pi/2, 0, pi/2, pi];
 ax.YTickLabel = ...
     {'$-\pi$';'$-\frac{\pi}{2}$';'$0$';'$\frac{\pi}{2}$';'$\pi$'};
 ax.XTick = [0, 45, 90, 135, 180];
-xlabel( '$\theta_{x}$ [deg]' );
+xlabel( '$\theta_{x}$ [deg]', 'FontSize', 24 );
 
 % Loop from end so we're increasing theta
 for kxCount = Nx:-1:1
@@ -151,10 +158,10 @@ for kxCount = Nx:-1:1
             box on;
             
             ylim( [-reconstructionDepth, 0] );
-            ylabel( '$z$-Position [m]', 'FontSize', 22 );
+            ylabel( '$z$-Position [m]', 'FontSize', 28 );
             
             xlim( [min(xVector), max(xVector)] );
-            xlabel( '$x$-Position [m]', 'FontSize', 22 );
+            xlabel( '$x$-Position [m]', 'FontSize', 28 );
             
             % Set flag so we only do this once
             needToCreateAxes = 0;
@@ -162,15 +169,14 @@ for kxCount = Nx:-1:1
         end
         
         % Plot wavefield for this frequency kz
-        pField = amplitude.*exp( 1j.*(kx.*xP + kz.*zP + phi ) );
+        pField = amplitude.*exp( 1i.*(kx.*xP + kz.*zP + phi ) );
         pcolor( waveFrontAxes, xP, zP, real( pField ) );
         shading flat;
-        normValue = 0.2;
+        normValue = 0.15;
         caxis( [-normValue, normValue] );
         
         % Get contribution of this spatial frequency
-        yPlot = amplitude.*real( exp( 1j.*(kx.*(xPlot - sourcePlaneWidth./2) + phi) ) );
-
+        yPlot = amplitude.*real( exp( 1i.*(kx.*(xPlot - sourcePlaneWidth./2) + phi) ) );
         
         % Also plot in gray to remain on plot
         previousContributions = plot( summationAxes, ...
@@ -189,12 +195,14 @@ for kxCount = Nx:-1:1
         
         % Plot spatial contribution on summation axes
         currentContribution = plot( summationAxes, ...
-            xPlot, yPlot, 'k', 'Tag', 'currentContribtutionLine' );
+            xPlot, yPlot, 'k', ...
+            'LineWidth', 3, ...
+            'Tag', 'currentContribtutionLine' );
         
         % Display the current angle
         titleString = sprintf( ...
             '$\\theta_{x} = %3d^{\\circ}$', round(180.*theta./pi) );
-        title( summationAxes, titleString );
+        title( summationAxes, titleString, 'FontSize', 28 );
         
         % Plot indicator on angluar spectrum plots
         currentIndicators = findobj( 'Tag', 'ASIndicator' );
@@ -214,4 +222,12 @@ for kxCount = Nx:-1:1
         
     end
     
+end
+
+if saveVideo 
+    videoObject = VideoWriter( filename );
+    videoObject.FrameRate = 4;
+    open( videoObject );
+    writeVideo( videoObject, M );
+    close( videoObject );    
 end

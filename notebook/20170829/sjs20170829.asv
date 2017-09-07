@@ -1,0 +1,48 @@
+% Script to fit Gaussian distribution to image
+%
+%
+
+clear all;
+close all;
+clc;
+
+imageFile = 'testImages/test.png';
+
+% Import test image and convert to intensity
+image = imread( imageFile );
+grayscaleImage = double( convertToGrayscale( image ) );
+
+% Find maximum intenstity
+[maxValue, maxIndex] = max( grayscaleImage(:) );
+
+% Get indices of that max value
+[ imgWidth, imgHeight ] = size( grayscaleImage );
+[maxRow, maxCol] = ind2sub( size( grayscaleImage ), maxIndex );
+
+% Get FWHM in each direction
+axialSlice = grayscaleImage( maxRow, : );
+transverseSlice = grayscaleImage( :, maxCol );
+axialSigma = fwhm( axialSlice, 1 );
+transverseSigma = fwhm( transverseSlice, 1 );
+
+% Create 2D gaussian function
+[x, y] = meshgrid( 1:imgWidth, 1:imgHeight );
+fit = exp( -( ...
+    ( (x - maxRow).^(2) )./( 2.*axialSigma.^(2) ) + ...
+    ( (y - maxCol).^(2) )./( 2.*transverseSigma.^(2) ) ...
+    ) );
+
+% Create guassian fit there
+figure();
+
+subplot( 1, 2, 1 );
+pcolor( grayscaleImage );
+shading flat;
+
+subplot( 1, 2, 2 
+
+
+
+
+
+

@@ -14,7 +14,7 @@ kr = linspace( 1, 30, 1000 );
 kr0 = 1;
 
 % Define Hankel functions
-nMax = 4;
+nMax = 2;
 normFactor = sqrt( pi./(2.*kr) );
 figure();
 hold all;
@@ -27,7 +27,7 @@ for nCount = 0:nMax
        besselj( nCount + 1/2, kr ) + 1i.*bessely( nCount + 1/2, kr ) );
    h0 = normFactor.*( ...
        besselj( nCount + 1/2, kr0 ) + 1i.*bessely( nCount + 1/2, kr0 ) );
-   jPlot( nCount + 1 ) = plot( kr, real(h./h0) );
+   jPlot( nCount + 1 ) = plot( kr, real(h./h0), 'k' );
    
    legendStrings{nCount + 1} = ['$n = ', num2str(nCount), '$'];
     
@@ -37,6 +37,6 @@ end
 % set( gca, 'XScale', 'log' );
 
 % Format
-xlabel( '$kr/kr_{0}$', 'FontSize', 18 );
-ylabel( '$h_{n}(kr)/h_{n}(kr_{0})$', 'FontSize', 18 );
-legend( legendStrings );
+xlabel( '$r/r_{0}$', 'FontSize', 28 );
+ylabel( '$G$', 'FontSize', 28 );
+% legend( legendStrings );

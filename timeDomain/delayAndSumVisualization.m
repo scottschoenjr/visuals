@@ -60,6 +60,9 @@ for receiverCount = 1 : numReceivers
     
 end
 
+% Set so that signals in air will arrive at 10 ms
+tVector = tVector + min( delays ) - 5E-3;
+
 % Plot each received signal
 figure()
 
@@ -77,12 +80,12 @@ for receiverCount = 1 : numReceivers
     offset = yRec( receiverCount );
     
     % Set scaling and plot
-    plot( 1E3.*tVector, 1E2.*(plotVector + offset), 'k' )
+    plot( 1E3.*tVector, 1E2.*(plotVector + offset), 'k' );
     
 end
 
 % Format plot
-xlabel( 'Time [ms]' );
+xlabel( 'Time [ms]', 'FontSize', 24 );
 xlim([5, 20]);
 set( gca, 'XTick', [10, 15, 20] ); % No tick at 0 to avoid clash
 % set( gca, 'XDir', 'Reverse' );
@@ -105,16 +108,16 @@ for receiverCount = 1 : numReceivers
    yLine = 1E2.*[ y0, yRec( receiverCount ) ];
    
    % Plot line
-   plot( xLine, yLine, '--r' );
+   plot( xLine, yLine, '--r' ); 
     
 end
 
 % Set same ylim as time series
-ylabel( 'Transverse Distance [cm]' );
+ylabel( 'Transverse Distance [cm]', 'FontSize', 24 );
 ylim( (1 + scale).*1E2.*[min(yRec), max(yRec)] );
 
 % Set left limit to receiver position
-xlabel( 'Axial Distance [cm]' );
+xlabel( 'Axial Distance [cm]', 'FontSize', 24 );
 xlim( 1E2.*[1.1.*x0, max(xRec)] );
 
 % Now plot delayed signals
@@ -135,35 +138,40 @@ for receiverCount = 1 : numReceivers
     
     % Get amplitude corrections
     amp = 1./rToPoint(receiverCount);
-    plotVector = scale.*amp.*sourceSignal;
+    plotVector1 = scale.*amp.*sourceSignal;
+    plotVector2 = scale.*amp.*receivedSignals(receiverCount, :);
     
     % Add into summation
-    summation = summation + plotVector;
+    summation = summation + plotVector1;
     
     % Get offset
     offset = yRec( receiverCount );
     
     % Set scaling and plot
-    plot( 1E3.*tVector, 1E2.*(plotVector + offset), 'k' )
+    plot( 1E3.*tVector, 1E2.*(plotVector2 + offset), ...
+        'Color', 0.5.*[1, 1, 1], ...
+        'LineWidth', 1.5 ...
+        );
+    plot( 1E3.*tVector, 1E2.*(plotVector1 + offset), 'k' )
     
 end
-xlim( [0, 20] );
+xlim( [0, 16] );
 ylim( (1 + scale).*1E2.*[min(yRec), max(yRec)] );
-ylabel( 'Transverse Distance [cm]' );
+ylabel( 'Transverse Distance [cm]', 'FontSize', 24 );
 
 summationAxes = axes();
 set( gca, 'Position', [0.12, 0.1, 0.8, 0.3] );
 hold all;
 box on;
 
-plot( 1E3.*tVector, summation./max(abs(summation)), 'k' );
-plot( 1E3.*tVector, abs(hilbert(summation./max(abs(summation)))), '--k' );
+plot( 1E3.*tVector, summation./max(abs(summation)), '--k' );
+plot( 1E3.*tVector, abs(hilbert(summation./max(abs(summation)))), 'k' );
 
-xlim( [0, 20] );
+xlim( [0, 16] );
 ylim([-1.12, 1.12]);
 
-xlabel('Time [ms]');
-ylabel('Total [AU]' );
+xlabel('Time [ms]', 'FontSize', 24);
+ylabel('Total [AU]', 'FontSize', 24 );
 
 
 

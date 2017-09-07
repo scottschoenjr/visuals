@@ -17,8 +17,8 @@ thetaVec = linspace( 0, pi, round( nPoints./2 ) ); % Elevation [rad]
 [ phi, theta ] = meshgrid( phiVec, thetaVec );
 
 % Define indices to work with
-n = 8;
-m = -6; % |m| <= n
+n = 0;
+m = 0; % |m| <= n
 
 % set figure background to white
 figure()

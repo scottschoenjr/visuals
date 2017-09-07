@@ -5,21 +5,20 @@ close all
 clc
 
 % Define parameter
-xMin = 0 - 0.1;
-xMax = 2.*pi + 0.1;
-Nx = 1000;
-x = linspace( xMin, xMax, 1000 );
+xMin = 1.2;
+xMax = 2.2;
+Nx = 100000;
+x = linspace( xMin, xMax, Nx );
 
 % Define function and its derivative
-factor = 5;
-f = @(x) sin(factor.*x);
-fPrime = @(x) factor.*cos(factor.*x);
+f = @(x) x.^(4) - 5;
+fPrime = @(x) 4*x.^(3);
 
 % Set initial guess
-x0 = pi - 0.8;
+x0 = 2;
 
 % Set pause duration
-pauseLength = 1;
+pauseLength = 0.2;
 
 % Set up figure
 figure()
@@ -33,19 +32,24 @@ functionPlot = plot( x, f(x) );
 xAxisLine = plot( [-1E6, 1E6], [0, 0], 'k', 'LineWidth', 1.5 );
 yAxisLine = plot( [0, 0], [-1E6, 1E6], 'k', 'LineWidth', 1.5 );
 
-xlim( [2, 4] );
-ylim( 1.1.*[-1, 1] );
+xlim( [xMin, xMax] );
+ylim( 3.*[-1, 1] );
 
 xlabel('$x$', 'FontSize', 22 );
 ylabel( '$f(x)$', 'FontSize', 22 );
 
 % Loop through and plot tangents
-numSteps = 6;
+numSteps = 8;
 for stepCount = 1:numSteps
     
     % Get current point's y-value
     y0 = f(x0);
-   
+    
+    if stepCount == 1
+        disp( [ 'Initial Guess = ', num2str( x0 ), '. ' ...
+            'f(x_i) = ', num2str(y0), '.'] );
+    end   
+        
     % Plot point of intial guess
     plot( x0, f(x0), 'ro' );
     plot( [x0, x0], [0, y0], '--k', 'LineWidth', 1 );
@@ -62,5 +66,9 @@ for stepCount = 1:numSteps
     % Find when the line crosses 0 and update
     newIndex = find( abs( line ) == min( abs( line ) ) );
     x0 = x( newIndex );
+    
+    % Display successive roots
+    disp( [ 'Next x_i = ', num2str( x0 ), '. ' ...
+            'f(x_i) = ', num2str(f(x0)), '.' ] );
     
 end

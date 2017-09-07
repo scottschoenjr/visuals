@@ -17,11 +17,11 @@ clc
 addpath( './callbacks' );
 
 % Create source signal
-Fs = 500;
+Fs = 10E3;
 tMax = 1;
 N = tMax.*Fs;
 tVector = linspace( 0, tMax, N ); % [s]
-f0 = 5;
+f0 = 400;
 s = sawtooth( 2.*pi.*f0.*tVector );
 s = square( 2.*pi.*f0.*tVector );
 percentile = 0.01; % Plot only this contributions above this
